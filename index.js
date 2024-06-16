@@ -30,7 +30,7 @@ function calculateSimilarity(anilistTitles, titles) {
         // const yearSimilarity = anilistTitle?.includes(gogoTitle?.released)
         //   ? 1
         //   : 0;
-        const totalSimilarity = (titleSimilarity ) / 2;
+        const totalSimilarity = titleSimilarity / 2;
         similarityScores.push({
           anilist: anilistTitle?.toLowerCase()?.replaceAll(" ", "-"),
           gogo: gogoTitle?.href?.toLowerCase(),
@@ -44,10 +44,10 @@ function calculateSimilarity(anilistTitles, titles) {
 }
 
 // Endpoint to get GoGoAnime ID based on AniList ID
-app.get("/anilist_to_gogo", async (req, res) => {
-  const id = req.query.id;
+app.get("/mappings", async (req, res) => {
+  const { id, provider } = req.query;
 
-  if (!id) {
+  if (!id || provider !== "gogoanime") {
     return res.status(400).json({ error: "ID query parameter is required" });
   }
 
@@ -69,7 +69,13 @@ app.get("/anilist_to_gogo", async (req, res) => {
     // console.log(similarityScores);
     const closestMatch = s[0];
     // console.log(closestMatch);
-    res.json({ id, gogoanime: closestMatch?.gogo, s, anilistTitles, gogoTitles });
+    res.json({
+      id,
+      gogoanime: closestMatch?.gogo,
+      s,
+      anilistTitles,
+      gogoTitles,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
