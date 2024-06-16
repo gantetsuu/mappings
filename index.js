@@ -56,6 +56,7 @@ app.get("/mappings", async (req, res) => {
     const u = `${id}${provider}`;
     let d = cache.get(u);
     if (d) {
+      console.log("found cache", JSON.stringify(d));
       return res.json(d);
     }
     const anilistData = await fetchTitles(id);
@@ -78,12 +79,13 @@ app.get("/mappings", async (req, res) => {
     d = {
       id,
       gogoanime: closestMatch?.gogo,
-      s,
-      anilistTitles,
-      gogoTitles,
     };
+    // s,
+    // anilistTitles,
+    // gogoTitles,
     res.json(d);
     cache.set(u, d, 18000);
+    console.log("sent", JSON.stringify(d));
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
