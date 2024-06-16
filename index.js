@@ -69,7 +69,7 @@ app.get("/anilist_to_gogo", async (req, res) => {
     // console.log(similarityScores);
     const closestMatch = s[0];
     // console.log(closestMatch);
-    res.json({ id, gogoId: closestMatch?.gogo, s, anilistTitles, gogoTitles });
+    res.json({ id, gogoanime: closestMatch?.gogo, s, anilistTitles, gogoTitles });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
