@@ -2,7 +2,8 @@ const express = require("express");
 const { distance } = require("fastest-levenshtein");
 const { searchOnGoGo } = require("./utils/Gogo");
 const { fetchTitles } = require("./utils/Anilist");
-
+const NodeCache = require("node-cache");
+const cache = new NodeCache();
 const app = express();
 
 function calculateSimilarity(anilistTitles, titles) {
@@ -45,13 +46,18 @@ function calculateSimilarity(anilistTitles, titles) {
 
 // Endpoint to get GoGoAnime ID based on AniList ID
 app.get("/mappings", async (req, res) => {
-  const { id, provider } = req.query;
+  const { id, provider = "gogoanime" } = req.query;
 
   if (!id || provider !== "gogoanime") {
     return res.status(400).json({ error: "ID query parameter is required" });
   }
 
   try {
+    const u = `${id}${provider}`;
+    let d = cache.get(u);
+    if (d) {
+      return res.json(d);
+    }
     const anilistData = await fetchTitles(id);
     const anilistTitles = Object.values(anilistData);
     let gogoTitles = [];
@@ -69,13 +75,15 @@ app.get("/mappings", async (req, res) => {
     // console.log(similarityScores);
     const closestMatch = s[0];
     // console.log(closestMatch);
-    res.json({
+    d = {
       id,
       gogoanime: closestMatch?.gogo,
       s,
       anilistTitles,
       gogoTitles,
-    });
+    };
+    res.json(d);
+    cache.set(u, d, 18000);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

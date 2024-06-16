@@ -37,8 +37,8 @@ async function searchOnGoGo(title, year, format) {
 
     return searchResults;
   } catch (error) {
-    console.error("Error searching on GoGoAnime:", error);
-    throw error;
+    console.error("Error searching on GoGoAnime:", title, error?.message);
+    return [];
   }
 }
 module.exports = { searchOnGoGo };
