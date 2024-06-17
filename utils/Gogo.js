@@ -32,7 +32,7 @@ async function searchOnGoGo(title, year, format) {
       if (href?.toLowerCase()?.includes("-dub")) {
         return;
       }
-      searchResults.push({ name, released, href });
+      searchResults.push({ name, released, slug: href, matcher: href });
     });
 
     return searchResults;
