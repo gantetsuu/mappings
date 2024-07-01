@@ -10,6 +10,7 @@ async function fetchTitles(id) {
                 romaji
                 english
               }
+              idMal
               seasonYear
               format
             }
@@ -30,10 +31,10 @@ async function fetchTitles(id) {
       return t?.replace(/\s*\(\d{4}\)$/, "");
     }
     return [
-      cleanTitle(`${title?.romaji} ${seasonYear}`),
-      cleanTitle(`${title?.english} ${seasonYear}`),
       cleanTitle(removeYear(title?.english)),
       cleanTitle(removeYear(title?.romaji)),
+      cleanTitle(`${title?.romaji} ${seasonYear}`),
+      cleanTitle(`${title?.english} ${seasonYear}`),
     ];
   } catch (error) {
     console.error("Error fetching anime info:", error);

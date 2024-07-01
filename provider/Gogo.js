@@ -1,20 +1,12 @@
-const gogoUrl = process.env.GOGO_URL || "https://anitaku.so";
+const gogoUrl = process.env.GOGO_URL || "https://anitaku.pe";
 const axios = require("axios");
-const cheerio = require("cheerio");
-const gogoTypes = {
-  TV: "1",
-  MOVIE: "3",
-  OVA: "2",
-  SPECIAL: "2",
-  MUSIC: "32",
-  ONA: "30",
-};
+const { load } = require("cheerio");
 async function searchOnGoGo(title, year, format) {
   try {
     const searchUrl = `${gogoUrl}/search.html?keyword=${title}`;
 
     const { data } = await axios.get(searchUrl);
-    const $ = cheerio.load(data);
+    const $ = load(data);
     const searchResults = [];
 
     $("ul.items li").each((index, element) => {
